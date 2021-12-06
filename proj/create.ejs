@@ -7,6 +7,9 @@
 </style>
 </head>
 <body>
+    <form action="/database" method="GET">
+        <button onclick="">back</button>
+    </form>
     <h1>Inventory Management System</h1>
     <h2>Create New Inventory</h2>
     <form action="/create" method="POST">
@@ -20,7 +23,7 @@
         GPS Latitude: <input type="text" name="Inv_Lat" placeholder="Latitude"><br><br>
         GPS Longitude: <input type="text" name="Inv_Lon" placeholder="Longitude"><br><br>
         Photo: <input type="text" name="Inv_Photo"><br><br>
-        <div class="Submit_button"><button type="submit">Login</button></div>
+        <div class="Submit_button"><button type="submit">Create</button></div>
     </form>
 </body>
 </html>
