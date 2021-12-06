@@ -134,6 +134,23 @@ const ShowInv = (req,res) => {
         })
     })
   }
+//showdetail
+const handle_Details = (res, criteria) => {
+    mongoose.connect(mongourl, {useMongoClient: true});
+    const db = mongoose.connection;
+    db.on('error', console.error.bind(console, 'connection error'));
+    db.once('open', () => {
+        const Inventory = mongoose.model('Inventory', InventorySchema);
+        /* use Document ID for query */
+        let DOCID = {};
+        DOCID['_id'] = ObjectID(criteria._id)
+        Inventory.findOne(criteria, (err,results) => {
+            if (err) return console.error(err);
+            res.render('/home/developer/proj/detail.ejs',{results:results});
+            db.close();
+        });
+    });
+}
 
 //bodyparser
 app.set('view engine', 'ejs');
@@ -174,6 +191,10 @@ app.post('/login',(req,res)=>{
 })
 
 app.get('/logout',function(req,res){ req.session=null; res.redirect('/');});
+
+app.get('/detail', function(req, res) {
+    handle_Details(res,req.query);
+  });
 
 const server = app.listen(process.env.PORT || 8099, () => {
 const port = server.address().port;
