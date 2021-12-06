@@ -70,17 +70,17 @@ const MatchUser = (req,res) => {
   }
 
 
-  const InsertInventory = (body,res) => {
-    var Inv_Name = body.Inv_Name;
-    var Inv_Type = body.Inv_Type;
-    var Inv_Quan = body.Inv_Quan;
-    var Inv_Street = body.Inv_Street;
-    var Inv_Build = body.Inv_Build;
-    var Inv_Country = body.Inv_Country;
-    var Inv_Zipcode = body.Inv_Zipcode;
-    var Inv_Lat = body.Inv_Lat;
-    var Inv_Lon = body.Inv_Lon;
-    var Inv_Photo = body.Inv_Photo;
+  const InsertInventory = (req,res) => {
+    var Inv_Name = req.body.Inv_Name;
+    var Inv_Type = req.body.Inv_Type;
+    var Inv_Quan = req.body.Inv_Quan;
+    var Inv_Street = req.body.Inv_Street;
+    var Inv_Build = req.body.Inv_Build;
+    var Inv_Country = req.body.Inv_Country;
+    var Inv_Zipcode = req.body.Inv_Zipcode;
+    var Inv_Lat = req.body.Inv_Lat;
+    var Inv_Lon = req.body.Inv_Lon;
+    var Inv_Photo = req.body.Inv_Photo;
     var Inv_ID =0;
     mongoose.connect(mongourl, {useMongoClient: true});
     const db = mongoose.connection;
@@ -112,7 +112,7 @@ const MatchUser = (req,res) => {
             if (err) throw err;
             console.log('Inventory created!');
             db.close();
-            res.render('/home/developer/proj/database.ejs');
+            ShowInv(req,res);
         })
     })
 }
@@ -162,9 +162,12 @@ app.get('/database', (req,res) => {
 app.get('/create', (req,res) => {
     res.render('/home/developer/proj/create.ejs');
     pageLocation="Create";
-    InsertInventory(req.body,res);
     });
 
+app.post('/create', (req,res) => {
+    InsertInventory(req,res);
+    });
+        
 //read user id and pw
 app.post('/login',(req,res)=>{
     MatchUser(req,res);
