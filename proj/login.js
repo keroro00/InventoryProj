@@ -105,7 +105,7 @@ const MatchUser = (req,res) => {
               zipcode: Inv_Zipcode,
               coord: [{latitude:Inv_Lat,longitude:Inv_Lon}]
             }],
-            manager:"Tony"
+            manager: req.session.username
           });
     
         pencil.save((err) => {
@@ -141,15 +141,34 @@ const handle_Details = (res, criteria) => {
     db.on('error', console.error.bind(console, 'connection error'));
     db.once('open', () => {
         const Inventory = mongoose.model('Inventory', InventorySchema);
-        /* use Document ID for query */
-        let DOCID = {};
-        DOCID['_id'] = ObjectID(criteria._id)
         Inventory.findOne(criteria, (err,results) => {
             if (err) return console.error(err);
             res.render('/home/developer/proj/detail.ejs',{results:results});
             db.close();
         });
     });
+}
+
+//delete
+const DeleteInv = (req, res) => {
+    mongoose.connect(mongourl, {useMongoClient: true});
+    const db = mongoose.connection;
+    db.on('error', console.error.bind(console, 'connection error'));
+    db.once('open', () => {
+        const Inventory = mongoose.model('Inventory', InventorySchema);
+        criteria=req.query;
+        Inventory.findOne(criteria, (err,results) => {
+        if(results.manager==req.session.username){
+            Inventory.deleteOne(criteria, (err,resultsToDelete) => {
+                if (err) return console.error(err);
+                console.log("OK");
+                db.close();
+                res.render('/home/developer/proj/delete.ejs');
+            }
+            )}
+        else res.redirect('/');
+        });
+    })
 }
 
 //bodyparser
@@ -194,6 +213,10 @@ app.get('/logout',function(req,res){ req.session=null; res.redirect('/');});
 
 app.get('/detail', function(req, res) {
     handle_Details(res,req.query);
+  });
+
+app.get('/delete', function(req, res) {
+    DeleteInv(req,res);
   });
 
 const server = app.listen(process.env.PORT || 8099, () => {
